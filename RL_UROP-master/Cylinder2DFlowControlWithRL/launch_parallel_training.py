@@ -57,9 +57,7 @@ if __name__ == '__main__':
 
     config["ent_coef"] = "auto_0.01"
     config["target_entropy"] = "auto"
-
-    model = TQC('MlpPolicy', VecFrameStack(env, n_stack=10), tensorboard_log=savedir, **config)
-
+    
     checkpoint_callback = CheckpointCallback(
                                             save_freq=max(10, 1),
                                             #num_to_keep=5,
@@ -70,7 +68,7 @@ if __name__ == '__main__':
 
 
     env = SubprocVecEnv([resume_env(nb_actuations,i) for i in range(number_servers)], start_method='spawn')
-    
+    model = TQC('MlpPolicy', VecFrameStack(env, n_stack=10), tensorboard_log=savedir, **config)
     model.learn(15000000, callback=[checkpoint_callback], log_interval=1)
 
    
